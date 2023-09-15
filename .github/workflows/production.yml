@@ -1,0 +1,26 @@
+name: Production
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  deploy-production:
+    name: Deploy code to production
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+
+      - uses: atymic/deployer-php-action@master
+        with:
+          ssh-disable-host-key-checking: true
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+      - name: Deploy to production
+        run: dep deploy production --branch=${{ github.tag_name }}
