@@ -20,30 +20,22 @@ host('production')
     ->set('deploy_path', '/var/www/{{application}}/production')
     ->set('multiplexing', true);
 
-    desc('Prepares a new release');
-task('deploy:prepare', [
-    'deploy:info',
-    'deploy:setup',
-    'deploy:lock',
-    'deploy:release',
-    'deploy:update_code',
-    'deploy:shared',
-    'deploy:writable',
-]);
+     task('deploy', [
+        'deploy:info',
+        'deploy:prepare',
+        'deploy:vendors',
+        'artisan:storage:link',
+        'artisan:view:cache',
+        'artisan:config:cache',
+        'artisan:migrate',
+        'npm:install',
+        'npm:run:prod',
+        'artisan:optimize',
+        'deploy:publish',
+        'php-fpm:reload',
 
-desc('Publishes the release');
-task('deploy:publish', [
-    'deploy:symlink',
-    'deploy:unlock',
-    'deploy:cleanup',
-    'deploy:success',
-]);
+    ]);
 
-desc('Deploys your project');
-task('deploy', [
-    'deploy:prepare',
-    'deploy:publish',
-]);
 
     task('artisan:optimize', function () {
         run('echo comando optimize desativado');
