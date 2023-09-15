@@ -53,7 +53,7 @@ host('production')
 
     task('npm:run:prod', function () {
         cd('{{release_path}}');
-        run('npm install;npm run dev;');
+        run('npm install;npm run build;');
     });
 
     after('artisan:optimize', 'artisan:config:clear');
